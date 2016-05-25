@@ -1,0 +1,2 @@
+# TUT_LINE_BOT
+TUTの休講情報をLINEで送信するプログラム
