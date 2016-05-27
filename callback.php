@@ -39,7 +39,7 @@
                 "BS:応用生物学部\r\n" .
                 "ME:工学部機械工学科\r\n" .
                 "EE:工学部電気電子工学科\r\n" .
-                "AC:工学部応用化学科\r\n";
+                "AC:工学部応用化学科";
             $response_format_text = ["contentType" => 1, "toType" => 1, "text" => $text];
             $postData = [
                 'to' => [$mid],
@@ -72,7 +72,7 @@
                 "BS:応用生物学部\r\n" .
                 "ME:工学部機械工学科\r\n" .
                 "EE:工学部電気電子工学科\r\n" .
-                "AC:工学部応用化学科\r\n";
+                "AC:工学部応用化学科";
             $response_format_text = ["contentType" => 1, "toType" => 1, "text" => $text];
             $postData = [
                 'to' => [$mid],
@@ -91,15 +91,15 @@
     /* メッセージ取得時 */
     if (isset($receiveText))
     {
-        $recieveData = explode(' ', $receiveText);
+        $recieveData = explode(' ', trim($receiveText));
         if (isset($mid) === true && strpos($mids, $mid) !== false)
         {
             /* SET(学部登録) */
-            if (strpos($recieveData[0], 'SET') !== false)
+            if ($recieveData[0] === "SET")
             {
                 for ($i = 0; $i < count($undergraduate); $i++)
                 {
-                    if (strpos($recieveData[1], $undergraduate[$i]) !== false)
+                    if ($recieveData[1] === $undergraduate[$i])
                     {
                         $func->deleteMid($mid, $mids);
                         $value = (strpos($recieveData[1], $undergraduate[0]) !== false) ? "全学部の休講情報をお知らせします." : $recieveData[1] . "学部の休講情報のみお知らせいたします.";
@@ -117,16 +117,16 @@
                     }
                 }
             } /* GET(全取得) */
-            else if (strpos($recieveData[0], 'GET') !== false)
+            else if ($recieveData[0] === "GET")
             {
                 for ($i = 0; $i < count($undergraduate); $i++)
                 {
-                    if (strpos($recieveData[1], $undergraduate[$i]) !== false)
+                    if ($recieveData[1] === $undergraduate[$i])
                     {
                         $data = $func->getInfo(); //休講情報取得
                         if (!empty($data))
                         {
-                            if (strpos(trim($recieveData[1]), 'ALL') !== false)   //全学部
+                            if ($recieveData[1] === "ALL")   //全学部
                             {
                                 foreach ($data as $id => $column)
                                 {
@@ -136,7 +136,7 @@
                             {
                                 foreach ($data as $id => $column)
                                 {
-                                    if (strpos($column['undergraduate'], $undergraduateInfo[trim($recieveData[1])]) !== false)
+                                    if (strpos($column['undergraduate'], $undergraduateInfo[$recieveData[1]]) !== false)
                                     {
                                         $func->post($func->makePostData($column, $mid, 2), $variable->channelId, $variable->channelSecret, $variable->mid);
                                     }
@@ -145,7 +145,7 @@
                         }
                     }
                 }
-            } else if (strpos($recieveData[0], 'INFO') !== false && isset($recieveData[1]) !== true)
+            } else if ($recieveData[0] === 'INFO' && isset($recieveData[1]) === false)
             {
                 $mids = file('./mids');
                 foreach ($mids as $userInfo)
@@ -153,7 +153,8 @@
                     if (strpos($userInfo, $mid) !== false)
                     {
                         $data = explode(',', $userInfo);
-                        $text = "登録されている学部:" . trim($data[1]) . "学部";
+                        $text = "登録されている学部 : " . trim($data[1]) . "学部\r\n".
+                                "User Mid : " . trim($data[0]);
                         $response_format_text = ["contentType" => 1, "toType" => 1, "text" => $text];
                         $postData = [
                             'to' => [$mid],

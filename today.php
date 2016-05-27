@@ -12,7 +12,6 @@
     $func = new func();
 
     $undergraduateInfo = array('CS' => 'コンピュータサイエンス学部', 'MS' => 'メディア学部', 'BS' => '応用生物学部', 'ME' => '機械工学科', 'EE' => '電気電子工学科', 'AC' => '応用化学科');
-    $value = json_decode(file_get_contents('content.txt'), true);
     $data = $func->getInfo();   //休講情報取得
 
     if (!empty($data))
